@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda de Ropa - Inicio</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Tienda de Ropa</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="products.html">Productos</a></li>
+                    <li><a href="cart.html">Carrito</a></li>
+                    <li><a href="about.html">Acerca de</a></li>
+                    <li><a href="contact.html">Contacto</a></li>
+                    <li><a href="login.html">Iniciar Sesión</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h2>Bienvenido a nuestra Tienda de Ropa</h2>
+            <p>Descubre la mejor moda para toda la familia</p>
+            <a href="products.html" class="btn">Ver Productos</a>
+        </div>
+    </section>
+
+    <section class="categories">
+        <div class="container">
+            <h2>Categorías</h2>
+            <div class="category-grid">
+                <div class="category">
+                    <img src="images/hombre.jpg" alt="Hombre">
+                    <h3>Hombre</h3>
+                    <a href="products.html?category=hombre" class="btn">Ver Más</a>
+                </div>
+                <div class="category">
+                    <img src="images/mujer.jpg" alt="Mujer">
+                    <h3>Mujer</h3>
+                    <a href="products.html?category=mujer" class="btn">Ver Más</a>
+                </div>
+                <div class="category">
+                    <img src="images/ninos.jpg" alt="Niños">
+                    <h3>Niños</h3>
+                    <a href="products.html?category=ninos" class="btn">Ver Más</a>
+                </div>
+                <div class="category">
+                    <img src="images/accesorios.jpg" alt="Accesorios">
+                    <h3>Accesorios</h3>
+                    <a href="products.html?category=accesorios" class="btn">Ver Más</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="featured">
+        <div class="container">
+            <h2>Productos Destacados</h2>
+            <div class="product-grid" id="featured-products">
+                <!-- Products will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Tienda de Ropa. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+        import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtV_d_dbg_m7vIOj0LLXRW8cJfwU1Vfv8",
+            authDomain: "apk-web-ventas.firebaseapp.com",
+            projectId: "apk-web-ventas",
+            storageBucket: "apk-web-ventas.firebasestorage.app",
+            messagingSenderId: "372731280498",
+            appId: "1:372731280498:web:11e1e39f5e61c589b556eb"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        window.firebaseAuth = { auth, provider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged };
+    </script>
+    <script src="scripts.js"></script>
+</body>
+</html>

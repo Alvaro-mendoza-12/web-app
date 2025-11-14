@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda de Ropa - Detalle del Producto</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Tienda de Ropa</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="products.html">Productos</a></li>
+                    <li><a href="cart.html">Carrito</a></li>
+                    <li><a href="about.html">Acerca de</a></li>
+                    <li><a href="contact.html">Contacto</a></li>
+                    <li><a href="login.html">Iniciar Sesión</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="product-detail">
+        <div class="container">
+            <div class="product-info">
+                <img id="product-image" src="" alt="Producto">
+                <div class="product-details">
+                    <h2 id="product-name"></h2>
+                    <p id="product-price"></p>
+                    <p id="product-description"></p>
+                    <div class="variants">
+                        <label for="size">Talla:</label>
+                        <select id="size">
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                        </select>
+                        <label for="color">Color:</label>
+                        <select id="color">
+                            <option value="Negro">Negro</option>
+                            <option value="Blanco">Blanco</option>
+                            <option value="Rojo">Rojo</option>
+                            <option value="Azul">Azul</option>
+                        </select>
+                    </div>
+                    <button id="add-to-cart" class="btn">Agregar al Carrito</button>
+                </div>
+            </div>
+            <div class="reviews">
+                <h3>Reseñas</h3>
+                <div id="review-list">
+                    <!-- Reviews will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Tienda de Ropa. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
