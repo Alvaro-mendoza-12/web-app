@@ -96,6 +96,16 @@ async function initializeApp() {
         await loadCartFromFirestore();
     }
 
+    // Load UI elements
+    loadFeaturedProducts();
+    loadProducts();
+    loadProductDetail();
+    loadUserInfo();
+    loadOrderHistory();
+    loadWishlist(); // Load wishlist display
+    if (window.location.pathname.includes('cart.html')) {
+        loadCart(); // Load cart display if on cart page
+    }
 
     setupEventListeners();
 }
@@ -131,9 +141,15 @@ function loadFeaturedProducts() {
             <img src="${product.image}" alt="${product.name}" loading="lazy">
             <h3>${product.name}</h3>
             <p>$${product.price}</p>
-            <a href="product-detail.html?id=${product.id}" class="btn">Ver Detalles</a>
+            <div class="product-actions">
+                <a href="product-detail.html?id=${product.id}" class="btn">Ver Detalles</a>
+                <button onclick="addToWishlist('${product.id}')" class="btn wishlist-btn" id="wishlist-${product.id}">Agregar a Lista de Deseos</button>
+            </div>
         </div>
     `).join('');
+
+    // Update wishlist buttons after loading
+    featuredProducts.forEach(product => updateWishlistButton(product.id));
 }
 
 // Load products on products page
@@ -151,9 +167,14 @@ function loadProducts() {
             <img src="${product.image}" alt="${product.name}" loading="lazy">
             <h3>${product.name}</h3>
             <p>$${product.price}</p>
-            <a href="product-detail.html?id=${product.id}" class="btn">Ver Detalles</a>
+            <div class="product-actions">
+                <a href="product-detail.html?id=${product.id}" class="btn">Ver Detalles</a>
+            </div>
         </div>
     `).join('');
+
+    // Update wishlist buttons after loading
+    filteredProducts.forEach(product => updateWishlistButton(product.id));
 }
 
 // Load product detail
@@ -187,6 +208,9 @@ function loadProductDetail() {
     if (addReviewDiv) {
         addReviewDiv.style.display = 'block';
     }
+
+    // Update wishlist button
+    updateWishlistButton(productId);
 }
 
 // Load cart
@@ -300,16 +324,7 @@ function setupEventListeners() {
         });
     }
 
-    // Add to wishlist button
-    const addToWishlistBtn = document.getElementById('add-to-wishlist');
-    if (addToWishlistBtn) {
-        addToWishlistBtn.addEventListener('click', async function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('id');
-            await addToWishlist(productId);
-            await saveWishlistToFirestore();
-        });
-    }
+    // Add to wishlist button event listener removed to avoid conflicts with dynamic onclick
 
     // Review form
     const reviewForm = document.getElementById('review-form');
@@ -460,9 +475,14 @@ function filterProducts() {
             <img src="${product.image}" alt="${product.name}" loading="lazy">
             <h3>${product.name}</h3>
             <p>$${product.price}</p>
-            <a href="product-detail.html?id=${product.id}" class="btn">Ver Detalles</a>
+            <div class="product-actions">
+                <a href="product-detail.html?id=${product.id}" class="btn">Ver Detalles</a>
+            </div>
         </div>
     `).join('');
+
+    // Update wishlist buttons after filtering
+    filteredProducts.forEach(product => updateWishlistButton(product.id));
 }
 
 // Login
@@ -699,7 +719,7 @@ function loadWishlist() {
 }
 
 // Add to wishlist
-function addToWishlist(productId) {
+async function addToWishlist(productId) {
     const product = products.find(p => p.id === productId);
     if (!product) return;
 
@@ -707,7 +727,17 @@ function addToWishlist(productId) {
     if (!existingItem) {
         wishlist.push(product);
         localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        // Save to Firestore if user is logged in
+        if (db && currentUser) {
+            await saveWishlistToFirestore();
+        }
         alert('Producto agregado a la lista de deseos');
+        // Update button
+        updateWishlistButton(productId);
+        // Update profile wishlist if on profile page
+        if (document.getElementById('wishlist-items')) {
+            loadWishlist();
+        }
     } else {
         alert('El producto ya está en la lista de deseos');
     }
@@ -718,6 +748,7 @@ function removeFromWishlist(productId) {
     wishlist = wishlist.filter(item => item.id !== productId);
     localStorage.setItem('wishlist', JSON.stringify(wishlist));
     loadWishlist();
+    alert('Producto quitado de la lista de deseos');
 }
 
 // Load wishlist from Firestore
@@ -823,6 +854,28 @@ function loadUserReviews() {
             <p>Fecha: ${new Date(review.date).toLocaleDateString()}</p>
         </div>
     `).join('');
+}
+
+// Update wishlist button
+function updateWishlistButton(productId) {
+    const wishlistBtn = document.getElementById('add-to-wishlist');
+    if (!wishlistBtn) return;
+
+    const isInWishlist = wishlist.some(item => item.id === productId);
+    if (isInWishlist) {
+        wishlistBtn.textContent = 'Quitar de Lista de Deseos';
+        wishlistBtn.classList.add('in-wishlist');
+        wishlistBtn.onclick = async function() {
+            await removeFromWishlist(productId);
+            updateWishlistButton(productId);
+        };
+    } else {
+        wishlistBtn.textContent = 'Agregar a Lista de Deseos';
+        wishlistBtn.classList.remove('in-wishlist');
+        wishlistBtn.onclick = async function() {
+            await addToWishlist(productId);
+        };
+    }
 }
 
 // Tab functionality for profile page

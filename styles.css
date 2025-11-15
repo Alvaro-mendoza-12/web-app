@@ -49,6 +49,16 @@ body {
     box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
 }
 
+.btn.in-wishlist {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+}
+
+.btn.in-wishlist:hover {
+    background: linear-gradient(135deg, #218838 0%, #1aa085 100%);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
+}
+
 .btn-secondary {
     background: #6c757d;
 }
@@ -329,6 +339,13 @@ nav ul li a:hover::after {
     font-weight: bold;
     font-size: 1.1em;
     margin-bottom: 20px;
+}
+
+.product-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
 }
 
 /* Product detail */
