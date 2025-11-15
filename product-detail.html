@@ -5,19 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda de Ropa - Detalle del Producto</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <header>
         <div class="container">
             <h1>Tienda de Ropa</h1>
             <nav>
-                <ul>
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="products.html">Productos</a></li>
-                    <li><a href="cart.html">Carrito</a></li>
-                    <li><a href="about.html">Acerca de</a></li>
-                    <li><a href="contact.html">Contacto</a></li>
-                    <li><a href="login.html">Iniciar Sesión</a></li>
+                <button class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul id="nav-menu">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="products.html"><i class="fas fa-tshirt"></i> Productos</a></li>
+                    <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> Carrito</a></li>
+                    <li><a href="about.html"><i class="fas fa-info-circle"></i> Acerca de</a></li>
+                    <li><a href="contact.html"><i class="fas fa-envelope"></i> Contacto</a></li>
+                    <li><a href="login.html"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a></li>
                 </ul>
             </nav>
         </div>
@@ -26,10 +33,12 @@
     <section class="product-detail">
         <div class="container">
             <div class="product-info">
-                <img id="product-image" src="" alt="Producto">
+                <div class="product-image-container">
+                    <img id="product-image" src="" alt="Producto">
+                </div>
                 <div class="product-details">
                     <h2 id="product-name"></h2>
-                    <p id="product-price"></p>
+                    <p class="price" id="product-price"></p>
                     <p id="product-description"></p>
                     <div class="variants">
                         <label for="size">Talla:</label>
@@ -47,13 +56,36 @@
                             <option value="Azul">Azul</option>
                         </select>
                     </div>
-                    <button id="add-to-cart" class="btn">Agregar al Carrito</button>
+                    <div class="product-actions">
+                        <button id="add-to-cart" class="btn">Agregar al Carrito</button>
+                        <button id="add-to-wishlist" class="btn btn-secondary"><i class="fas fa-heart"></i> Favoritos</button>
+                    </div>
                 </div>
             </div>
             <div class="reviews">
-                <h3>Reseñas</h3>
+                <h3>Reseñas de Clientes</h3>
                 <div id="review-list">
                     <!-- Reviews will be loaded here -->
+                </div>
+                <div id="add-review">
+                    <h4>Comparte tu Opinión</h4>
+                    <form id="review-form">
+                        <div class="form-group">
+                            <label for="rating">Calificación:</label>
+                            <select id="rating" required>
+                                <option value="5">⭐⭐⭐⭐⭐ 5 estrellas</option>
+                                <option value="4">⭐⭐⭐⭐ 4 estrellas</option>
+                                <option value="3">⭐⭐⭐ 3 estrellas</option>
+                                <option value="2">⭐⭐ 2 estrellas</option>
+                                <option value="1">⭐ 1 estrella</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="comment">Comentario:</label>
+                            <textarea id="comment" placeholder="Cuéntanos tu experiencia..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Enviar Reseña</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -62,9 +94,42 @@
     <footer>
         <div class="container">
             <p>&copy; 2023 Tienda de Ropa. Todos los derechos reservados.</p>
+            <div class="social-links">
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            </div>
         </div>
     </footer>
 
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+        import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, signInWithPhoneNumber, RecaptchaVerifier, signInAnonymously } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js';
+        import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtV_d_dbg_m7vIOj0LLXRW8cJfwU1Vfv8",
+            authDomain: "apk-web-ventas.firebaseapp.com",
+            projectId: "apk-web-ventas",
+            storageBucket: "apk-web-ventas.firebasestorage.app",
+            messagingSenderId: "372731280498",
+            appId: "1:372731280498:web:11e1e39f5e61c589b556eb"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        const db = getFirestore(app);
+
+        window.firebaseAuth = { auth, provider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, signInWithPhoneNumber, RecaptchaVerifier, signInAnonymously };
+        window.firestore = { db, collection, doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, onSnapshot };
+    </script>
     <script src="scripts.js"></script>
 </body>
 </html>

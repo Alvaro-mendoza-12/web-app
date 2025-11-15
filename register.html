@@ -5,47 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda de Ropa - Registro</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <header>
         <div class="container">
             <h1>Tienda de Ropa</h1>
             <nav>
-                <ul>
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="products.html">Productos</a></li>
-                    <li><a href="cart.html">Carrito</a></li>
-                    <li><a href="about.html">Acerca de</a></li>
-                    <li><a href="contact.html">Contacto</a></li>
-                    <li><a href="login.html">Iniciar Sesión</a></li>
+                <button class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul id="nav-menu">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="products.html"><i class="fas fa-tshirt"></i> Productos</a></li>
+                    <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> Carrito</a></li>
+                    <li><a href="about.html"><i class="fas fa-info-circle"></i> Acerca de</a></li>
+                    <li><a href="contact.html"><i class="fas fa-envelope"></i> Contacto</a></li>
+                    <li><a href="login.html"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <section class="auth">
-        <div class="container">
-            <h2>Registro</h2>
-            <button id="google-register" class="btn google-btn">Registrarse con Google</button>
-            <button id="phone-login" class="btn phone-btn">Registrarse con Teléfono</button>
-            <button id="anonymous-login" class="btn anonymous-btn">Registrarse Anónimo</button>
-            <div class="divider">o</div>
-            <form id="register-form">
-                <div class="form-group">
-                    <label for="register-name">Nombre:</label>
-                    <input type="text" id="register-name" required>
+        <div class="auth-overlay"></div>
+        <div class="auth-content">
+            <div class="auth-form">
+                <h2>Únete a Nuestra Comunidad</h2>
+                <p>Crea tu cuenta y descubre las mejores ofertas exclusivas</p>
+
+                <button id="google-register" class="btn google-btn">
+                    <i class="fab fa-google"></i> Registrarse con Google
+                </button>
+                <button id="phone-login" class="btn phone-btn">
+                    <i class="fas fa-phone"></i> Registrarse con Teléfono
+                </button>
+
+                <div class="divider">
+                    <span>o</span>
                 </div>
-                <div class="form-group">
-                    <label for="register-email">Email:</label>
-                    <input type="email" id="register-email" required>
-                </div>
-                <div class="form-group">
-                    <label for="register-password">Contraseña:</label>
-                    <input type="password" id="register-password" required>
-                </div>
-                <button type="submit" class="btn">Registrarse</button>
-            </form>
-            <p>¿Ya tienes cuenta? <a href="login.html">Inicia Sesión</a></p>
+
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-name">
+                            <i class="fas fa-user"></i> Nombre Completo:
+                        </label>
+                        <input type="text" id="register-name" placeholder="Tu nombre completo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">
+                            <i class="fas fa-envelope"></i> Email:
+                        </label>
+                        <input type="email" id="register-email" placeholder="tu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">
+                            <i class="fas fa-lock"></i> Contraseña:
+                        </label>
+                        <input type="password" id="register-password" placeholder="Mínimo 6 caracteres" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm-password">
+                            <i class="fas fa-lock"></i> Confirmar Contraseña:
+                        </label>
+                        <input type="password" id="register-confirm-password" placeholder="Repite tu contraseña" required>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="terms" required>
+                            <span class="checkmark"></span>
+                            Acepto los <a href="#" class="link">Términos y Condiciones</a> y la <a href="#" class="link">Política de Privacidad</a>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn register-btn">
+                        <i class="fas fa-user-plus"></i> Crear Cuenta
+                    </button>
+                </form>
+
+                <p class="auth-footer">
+                    ¿Ya tienes cuenta? <a href="login.html" class="link">Inicia Sesión</a>
+                </p>
+            </div>
         </div>
     </section>
 

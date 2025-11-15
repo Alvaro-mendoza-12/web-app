@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda de Ropa - Perfil</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
@@ -13,14 +14,19 @@
         <div class="container">
             <h1>Tienda de Ropa</h1>
             <nav>
-                <ul>
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="products.html">Productos</a></li>
-                    <li><a href="cart.html">Carrito</a></li>
-                    <li><a href="about.html">Acerca de</a></li>
-                    <li><a href="contact.html">Contacto</a></li>
-                    <li><a href="profile.html">Perfil</a></li>
-                    <li><a href="#" id="logout">Cerrar Sesión</a></li>
+                <button class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul id="nav-menu">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="products.html"><i class="fas fa-tshirt"></i> Productos</a></li>
+                    <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> Carrito</a></li>
+                    <li><a href="about.html"><i class="fas fa-info-circle"></i> Acerca de</a></li>
+                    <li><a href="contact.html"><i class="fas fa-envelope"></i> Contacto</a></li>
+                    <li><a href="profile.html"><i class="fas fa-user"></i> Perfil</a></li>
+                    <li><a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
                 </ul>
             </nav>
         </div>
@@ -31,6 +37,14 @@
             <h2>Mi Perfil</h2>
             <div id="user-info">
                 <!-- User info will be loaded here -->
+            </div>
+            <h3>Lista de Deseos</h3>
+            <div id="wishlist-items">
+                <!-- Wishlist will be loaded here -->
+            </div>
+            <h3>Mis Reseñas</h3>
+            <div id="user-reviews">
+                <!-- User reviews will be loaded here -->
             </div>
             <h3>Historial de Pedidos</h3>
             <div id="order-history">

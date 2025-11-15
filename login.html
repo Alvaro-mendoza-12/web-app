@@ -5,43 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda de Ropa - Iniciar Sesión</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <header>
         <div class="container">
             <h1>Tienda de Ropa</h1>
             <nav>
-                <ul>
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="products.html">Productos</a></li>
-                    <li><a href="cart.html">Carrito</a></li>
-                    <li><a href="about.html">Acerca de</a></li>
-                    <li><a href="contact.html">Contacto</a></li>
-                    <li><a href="login.html">Iniciar Sesión</a></li>
+                <button class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul id="nav-menu">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="products.html"><i class="fas fa-tshirt"></i> Productos</a></li>
+                    <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> Carrito</a></li>
+                    <li><a href="about.html"><i class="fas fa-info-circle"></i> Acerca de</a></li>
+                    <li><a href="contact.html"><i class="fas fa-envelope"></i> Contacto</a></li>
+                    <li><a href="login.html"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <section class="auth">
-        <div class="container">
-            <h2>Iniciar Sesión</h2>
-            <button id="google-login" class="btn google-btn">Iniciar Sesión con Google</button>
-            <button id="phone-login" class="btn phone-btn">Iniciar Sesión con Teléfono</button>
-            <button id="anonymous-login" class="btn anonymous-btn">Iniciar Sesión Anónimo</button>
-            <div class="divider">o</div>
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="login-email">Email:</label>
-                    <input type="email" id="login-email" required>
+        <div class="auth-container">
+            <div class="auth-content">
+                <h2>Bienvenido a Nuestra Tienda de Moda</h2>
+                <p>Descubre las últimas tendencias en ropa y accesorios. Inicia sesión para acceder a ofertas exclusivas y personalizar tu experiencia de compra.</p>
+                <div class="auth-buttons">
+                    <button id="google-login" class="btn google-btn">
+                        <i class="fab fa-google"></i> Iniciar Sesión con Google
+                    </button>
+                    <button id="phone-login" class="btn phone-btn">
+                        <i class="fas fa-phone"></i> Iniciar Sesión con Teléfono
+                    </button>
                 </div>
-                <div class="form-group">
-                    <label for="login-password">Contraseña:</label>
-                    <input type="password" id="login-password" required>
-                </div>
-                <button type="submit" class="btn">Iniciar Sesión</button>
-            </form>
-            <p>¿No tienes cuenta? <a href="register.html">Regístrate</a></p>
+                <div class="divider">o</div>
+                <form id="login-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="login-email">
+                            <i class="fas fa-envelope"></i> Email:
+                        </label>
+                        <input type="email" id="login-email" placeholder="tu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">
+                            <i class="fas fa-lock"></i> Contraseña:
+                        </label>
+                        <input type="password" id="login-password" placeholder="Tu contraseña" required>
+                    </div>
+                    <button type="submit" class="btn auth-submit-btn">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </button>
+                </form>
+                <p class="auth-link">¿No tienes cuenta? <a href="register.html">Regístrate aquí</a></p>
+            </div>
         </div>
     </section>
 
