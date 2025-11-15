@@ -10,7 +10,7 @@
 <body>
     <header>
         <div class="container">
-            <h1>Tienda de Ropa</h1>
+            <h1><a href="index.html" style="text-decoration: none; color: inherit;">Tienda de Ropa</a></h1>
             <nav>
                 <button class="hamburger" id="hamburger">
                     <span></span>
@@ -68,6 +68,29 @@
         </div>
     </footer>
 
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+        import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, signInWithPhoneNumber, RecaptchaVerifier, signInAnonymously } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js';
+        import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtV_d_dbg_m7vIOj0LLXRW8cJfwU1Vfv8",
+            authDomain: "apk-web-ventas.firebaseapp.com",
+            projectId: "apk-web-ventas",
+            storageBucket: "apk-web-ventas.firebasestorage.app",
+            messagingSenderId: "372731280498",
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        window.firebaseAuth = { auth, provider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, signInWithPhoneNumber, RecaptchaVerifier, signInAnonymously };
+        window.firestore = { db, collection, doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, onSnapshot };
+    </script>
     <script src="scripts.js"></script>
 </body>
 </html>

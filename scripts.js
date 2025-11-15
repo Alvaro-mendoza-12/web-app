@@ -26,6 +26,27 @@ async function initializeApp() {
 
     firebaseAuth = window.firebaseAuth;
 
+    // Load fallback data immediately
+    products = [
+        { id: '1', name: 'Camisa Casual', price: 25, category: 'hombre', image: 'images/camisa.jpg', description: 'Camisa cómoda para el día a día.' },
+        { id: '2', name: 'Vestido Elegante', price: 50, category: 'mujer', image: 'images/vestido.jpg', description: 'Vestido perfecto para ocasiones especiales.' },
+        { id: '3', name: 'Pantalones Jeans', price: 40, category: 'hombre', image: 'images/pantalones.jpg', description: 'Pantalones jeans de alta calidad.' },
+        { id: '4', name: 'Blusa Floral', price: 30, category: 'mujer', image: 'images/blusa.jpg', description: 'Blusa con estampado floral.' },
+        { id: '5', name: 'Zapatillas Deportivas', price: 60, category: 'hombre', image: 'images/zapatillas.jpg', description: 'Zapatillas cómodas para el deporte.' },
+        { id: '6', name: 'Falda Plisada', price: 35, category: 'mujer', image: 'images/falda.jpg', description: 'Falda plisada elegante.' },
+        { id: '7', name: 'Sudadera con Capucha', price: 45, category: 'hombre', image: 'images/sudadera.jpg', description: 'Sudadera cálida y cómoda.' },
+        { id: '8', name: 'Bolso de Mano', price: 55, category: 'accesorios', image: 'images/bolso.jpg', description: 'Bolso elegante para llevar tus essentials.' },
+        { id: '9', name: 'Gorra Deportiva', price: 20, category: 'accesorios', image: 'images/gorra.jpg', description: 'Gorra perfecta para actividades al aire libre.' },
+        { id: '10', name: 'Vestido de Niña', price: 28, category: 'ninos', image: 'images/vestido-nina.jpg', description: 'Vestido adorable para niñas.' },
+        { id: '11', name: 'Camiseta de Niño', price: 15, category: 'ninos', image: 'images/camiseta-nino.jpg', description: 'Camiseta cómoda para niños.' },
+        { id: '12', name: 'Pantalones Cortos', price: 22, category: 'ninos', image: 'images/pantalones-cortos.jpg', description: 'Pantalones cortos ideales para el verano.' }
+    ];
+    reviews = [
+        { productId: '1', user: 'Juan', rating: 5, comment: 'Excelente calidad, muy cómodo.' },
+        { productId: '1', user: 'María', rating: 4, comment: 'Buen producto, llegó rápido.' },
+        { productId: '2', user: 'Ana', rating: 5, comment: 'Me encanta, perfecto para una cena.' }
+    ];
+
     // Setup auth listener
     firebaseAuth.onAuthStateChanged(firebaseAuth.auth, async (user) => {
         if (user) {
@@ -53,24 +74,23 @@ async function initializeApp() {
         await loadReviewsFromFirestore();
         await loadOrdersFromFirestore();
 
-        // Load cart from localStorage (for now, later migrate to Firestore)
-        cart = JSON.parse(localStorage.getItem('cart')) || [];
-
         // Load UI
         loadFeaturedProducts();
         loadProducts();
         loadProductDetail();
-        loadCart();
         loadUserInfo();
         loadOrderHistory();
         await loadWishlistFromFirestore();
-        loadWishlist();
     } else {
         console.log('Firestore not initialized, using local data');
-        // Load cart from localStorage
-        cart = JSON.parse(localStorage.getItem('cart')) || [];
-        wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
     }
+
+    // Load cart and wishlist from localStorage (always, as fallback)
+    cart = JSON.parse(localStorage.getItem('cart')) || [];
+    wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+    console.log('Cart loaded from localStorage:', cart);
+    console.log('Wishlist loaded from localStorage:', wishlist);
+
 
     setupEventListeners();
 }
@@ -216,9 +236,14 @@ function loadUserInfo() {
     if (!userInfoContainer || !currentUser) return;
 
     userInfoContainer.innerHTML = `
-        <h3>Información del Usuario</h3>
-        <p>Nombre: ${currentUser.name}</p>
-        <p>Email: ${currentUser.email}</p>
+        <div class="user-avatar">
+            <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="user-details">
+            <h3>${currentUser.name}</h3>
+            <p><i class="fas fa-envelope"></i> ${currentUser.email}</p>
+            <p><i class="fas fa-calendar"></i> Miembro desde ${new Date().toLocaleDateString()}</p>
+        </div>
     `;
 
     // Load user reviews
@@ -744,6 +769,29 @@ function loadUserReviews() {
             <p>Fecha: ${new Date(review.date).toLocaleDateString()}</p>
         </div>
     `).join('');
+}
+
+// Tab functionality for profile page
+function showTab(tabName) {
+    // Hide all tabs
+    const tabs = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => tab.classList.remove('active'));
+
+    // Remove active class from all buttons
+    const buttons = document.querySelectorAll('.tab-button');
+    buttons.forEach(button => button.classList.remove('active'));
+
+    // Show selected tab
+    const selectedTab = document.getElementById(tabName + '-tab');
+    if (selectedTab) {
+        selectedTab.classList.add('active');
+    }
+
+    // Add active class to clicked button
+    const activeButton = document.querySelector(`[onclick="showTab('${tabName}')"]`);
+    if (activeButton) {
+        activeButton.classList.add('active');
+    }
 }
 
 

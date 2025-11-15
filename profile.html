@@ -12,7 +12,7 @@
 <body>
     <header>
         <div class="container">
-            <h1>Tienda de Ropa</h1>
+            <h1><a href="index.html" style="text-decoration: none; color: inherit;">Tienda de Ropa</a></h1>
             <nav>
                 <button class="hamburger" id="hamburger">
                     <span></span>
@@ -35,20 +35,35 @@
     <section class="profile">
         <div class="container">
             <h2>Mi Perfil</h2>
-            <div id="user-info">
+            <div id="user-info" class="user-info-card">
                 <!-- User info will be loaded here -->
             </div>
-            <h3>Lista de Deseos</h3>
-            <div id="wishlist-items">
-                <!-- Wishlist will be loaded here -->
+
+            <div class="profile-tabs">
+                <button class="tab-button active" onclick="showTab('wishlist')">Lista de Deseos</button>
+                <button class="tab-button" onclick="showTab('reviews')">Mis Reseñas</button>
+                <button class="tab-button" onclick="showTab('orders')">Historial de Pedidos</button>
             </div>
-            <h3>Mis Reseñas</h3>
-            <div id="user-reviews">
-                <!-- User reviews will be loaded here -->
+
+            <div id="wishlist-tab" class="tab-content active">
+                <h3>Lista de Deseos</h3>
+                <div id="wishlist-items">
+                    <!-- Wishlist will be loaded here -->
+                </div>
             </div>
-            <h3>Historial de Pedidos</h3>
-            <div id="order-history">
-                <!-- Order history will be loaded here -->
+
+            <div id="reviews-tab" class="tab-content">
+                <h3>Mis Reseñas</h3>
+                <div id="user-reviews">
+                    <!-- User reviews will be loaded here -->
+                </div>
+            </div>
+
+            <div id="orders-tab" class="tab-content">
+                <h3>Historial de Pedidos</h3>
+                <div id="order-history">
+                    <!-- Order history will be loaded here -->
+                </div>
             </div>
         </div>
     </section>
