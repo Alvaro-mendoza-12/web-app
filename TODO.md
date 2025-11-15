@@ -30,8 +30,8 @@
 - [x] Ensure cart syncs between localStorage and Firestore
 
 ## 5. Testing and Verification
-- [ ] Test product detail page image loading
-- [ ] Test review form visibility and submission
-- [ ] Test hamburger menu on mobile devices
-- [ ] Test cart persistence across sessions
-- [ ] Ensure overall responsiveness
+- [x] Test product detail page image loading
+- [x] Test review form visibility and submission
+- [x] Test hamburger menu on mobile devices
+- [x] Test cart persistence across sessions
+- [x] Ensure overall responsiveness

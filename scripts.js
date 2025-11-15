@@ -56,6 +56,8 @@ async function initializeApp() {
                 await loadUserProfileFromFirestore(user.uid);
             }
             updateNavForLoggedInUser();
+            // Load user info after login
+            loadUserInfo();
             // Redirect to profile if on login/register page
             if (window.location.pathname.includes('login.html') || window.location.pathname.includes('register.html')) {
                 window.location.href = 'profile.html';
@@ -63,6 +65,11 @@ async function initializeApp() {
         } else {
             currentUser = null;
             updateNavForLoggedOutUser();
+            // Clear user info if logged out
+            const userInfoContainer = document.getElementById('user-info');
+            if (userInfoContainer) {
+                userInfoContainer.innerHTML = '<p>Debes iniciar sesión para ver tu perfil.</p>';
+            }
         }
     });
 
@@ -78,7 +85,6 @@ async function initializeApp() {
         loadFeaturedProducts();
         loadProducts();
         loadProductDetail();
-        loadUserInfo();
         loadOrderHistory();
         await loadWishlistFromFirestore();
     } else {
@@ -100,7 +106,6 @@ async function initializeApp() {
     loadFeaturedProducts();
     loadProducts();
     loadProductDetail();
-    loadUserInfo();
     loadOrderHistory();
     loadWishlist(); // Load wishlist display
     if (window.location.pathname.includes('cart.html')) {
