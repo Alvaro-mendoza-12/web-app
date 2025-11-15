@@ -5,6 +5,7 @@ let cart = [];
 let currentUser = null;
 let orders = [];
 let wishlist = [];
+// Removed users array as authentication is now handled by Firebase
 
 // Firebase references
 let firebaseAuth = null;
@@ -12,9 +13,40 @@ let db = null;
 
 // Initialize Firebase and load data
 async function initializeApp() {
+    // Wait for Firebase Auth to load
+    let attempts = 0;
+    while (!window.firebaseAuth && attempts < 50) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        attempts++;
+    }
+    if (!window.firebaseAuth) {
+        console.error('Firebase Auth not loaded');
+        return;
+    }
+
+    firebaseAuth = window.firebaseAuth;
+
+    // Setup auth listener
+    firebaseAuth.onAuthStateChanged(firebaseAuth.auth, async (user) => {
+        if (user) {
+            currentUser = { id: user.uid, name: user.displayName || user.email, email: user.email };
+            if (window.firestore) {
+                db = window.firestore.db;
+                await loadUserProfileFromFirestore(user.uid);
+            }
+            updateNavForLoggedInUser();
+            // Redirect to profile if on login/register page
+            if (window.location.pathname.includes('login.html') || window.location.pathname.includes('register.html')) {
+                window.location.href = 'profile.html';
+            }
+        } else {
+            currentUser = null;
+            updateNavForLoggedOutUser();
+        }
+    });
+
     if (window.firestore) {
         db = window.firestore.db;
-        firebaseAuth = window.firebaseAuth;
 
         // Load data from Firestore
         await loadProductsFromFirestore();
@@ -23,22 +55,6 @@ async function initializeApp() {
 
         // Load cart from localStorage (for now, later migrate to Firestore)
         cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-        // Setup auth listener
-        firebaseAuth.onAuthStateChanged(firebaseAuth.auth, async (user) => {
-            if (user) {
-                currentUser = { id: user.uid, name: user.displayName || user.email, email: user.email };
-                await loadUserProfileFromFirestore(user.uid);
-                updateNavForLoggedInUser();
-                // Redirect to profile if on login/register page
-                if (window.location.pathname.includes('login.html') || window.location.pathname.includes('register.html')) {
-                    window.location.href = 'profile.html';
-                }
-            } else {
-                currentUser = null;
-                updateNavForLoggedOutUser();
-            }
-        });
 
         // Load UI
         loadFeaturedProducts();
@@ -49,14 +65,35 @@ async function initializeApp() {
         loadOrderHistory();
         await loadWishlistFromFirestore();
         loadWishlist();
-        setupEventListeners();
     } else {
-        console.error('Firestore not initialized');
+        console.log('Firestore not initialized, using local data');
+        // Load cart from localStorage
+        cart = JSON.parse(localStorage.getItem('cart')) || [];
+        wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+    }
+
+    setupEventListeners();
+}
+
+// Setup hamburger menu (independent of Firebase)
+function setupHamburgerMenu() {
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('nav-menu');
+    if (hamburger && navMenu) {
+        hamburger.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
     }
 }
 
 // DOM Content Loaded
-document.addEventListener('DOMContentLoaded', initializeApp);
+document.addEventListener('DOMContentLoaded', function() {
+    // Setup hamburger menu immediately (not dependent on Firebase)
+    setupHamburgerMenu();
+    // Initialize app (Firebase dependent)
+    initializeApp();
+});
 
 // Load featured products on home page
 function loadFeaturedProducts() {
@@ -206,35 +243,7 @@ function loadOrderHistory() {
 
 // Setup event listeners
 function setupEventListeners() {
-    // Hamburger menu toggle
-    const hamburger = document.getElementById('hamburger');
-    const navMenu = document.getElementById('nav-menu');
-    if (hamburger && navMenu) {
-        hamburger.addEventListener('click', function() {
-            navMenu.classList.toggle('active');
-            hamburger.classList.toggle('active');
-        });
-    }
-
-    // Initialize Firebase Auth
-    if (window.firebaseAuth) {
-        firebaseAuth = window.firebaseAuth;
-        firebaseAuth.onAuthStateChanged(firebaseAuth.auth, (user) => {
-            if (user) {
-                currentUser = { id: user.uid, name: user.displayName || user.email, email: user.email };
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                updateNavForLoggedInUser();
-                // Redirect to profile if on login/register page
-                if (window.location.pathname.includes('login.html') || window.location.pathname.includes('register.html')) {
-                    window.location.href = 'profile.html';
-                }
-            } else {
-                currentUser = null;
-                localStorage.removeItem('currentUser');
-                updateNavForLoggedOutUser();
-            }
-        });
-    }
+    // Hamburger menu toggle is already set up in setupHamburgerMenu()
 
     // Add to cart button
     const addToCartBtn = document.getElementById('add-to-cart');
@@ -412,30 +421,29 @@ function filterProducts() {
 }
 
 // Login
-function login(email, password) {
-    const user = users.find(u => u.email === email && u.password === password);
-    if (user) {
-        currentUser = user;
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        alert('Inicio de sesión exitoso');
-        window.location.href = 'profile.html';
-    } else {
-        alert('Credenciales incorrectas');
+async function login(email, password) {
+    try {
+        const userCredential = await firebaseAuth.signInWithEmailAndPassword(firebaseAuth.auth, email, password);
+        console.log('Usuario autenticado:', userCredential.user);
+        // No alert needed, handled by onAuthStateChanged
+    } catch (error) {
+        alert('Error en el inicio de sesión: ' + error.message);
     }
 }
 
 // Register
-function register(name, email, password) {
-    if (users.find(u => u.email === email)) {
-        alert('El email ya está registrado');
-        return;
+async function register(name, email, password) {
+    try {
+        const userCredential = await firebaseAuth.createUserWithEmailAndPassword(firebaseAuth.auth, email, password);
+        console.log('Usuario registrado:', userCredential.user);
+        // Update display name
+        await firebaseAuth.updateProfile(firebaseAuth.auth.currentUser, {
+            displayName: name
+        });
+        // No alert needed, handled by onAuthStateChanged
+    } catch (error) {
+        alert('Error en el registro: ' + error.message);
     }
-
-    const newUser = { id: Date.now(), name, email, password };
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    alert('Registro exitoso. Ahora puedes iniciar sesión.');
-    window.location.href = 'login.html';
 }
 
 // Google Login
@@ -451,11 +459,18 @@ async function googleLogin() {
 
 // Google Register
 async function googleRegister() {
+    console.log('Google register button clicked');
+    if (!firebaseAuth) {
+        console.error('Firebase Auth not initialized');
+        alert('Error: Firebase Auth no inicializado');
+        return;
+    }
     try {
         const result = await firebaseAuth.signInWithPopup(firebaseAuth.auth, firebaseAuth.provider);
         console.log('Usuario registrado:', result.user);
         // No alert needed, handled by onAuthStateChanged
     } catch (error) {
+        console.error('Error en el registro con Google:', error);
         alert('Error en el registro con Google: ' + error.message);
     }
 }
@@ -516,7 +531,6 @@ function logout() {
         firebaseAuth.signOut(firebaseAuth.auth);
     }
     currentUser = null;
-    localStorage.removeItem('currentUser');
     updateNavForLoggedOutUser();
     window.location.href = 'index.html';
 }
@@ -732,38 +746,4 @@ function loadUserReviews() {
     `).join('');
 }
 
-// Hamburger menu toggle
-function toggleMenu() {
-    const navMenu = document.getElementById('nav-menu');
-    if (navMenu) {
-        navMenu.classList.toggle('active');
-    }
-}
 
-// Close hamburger menu when clicking a link
-function closeMenuOnLinkClick() {
-    const navMenu = document.getElementById('nav-menu');
-    const navLinks = navMenu.querySelectorAll('a');
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            if (navMenu.classList.contains('active')) {
-                // Close menu instantly to prevent flash
-                navMenu.style.transition = 'none';
-                navMenu.classList.remove('active');
-                // Force reflow to apply changes
-                navMenu.offsetHeight;
-                // Restore transition
-                navMenu.style.transition = '';
-            }
-        });
-    });
-}
-
-// Setup hamburger menu event listeners
-document.addEventListener('DOMContentLoaded', function() {
-    const hamburger = document.getElementById('hamburger');
-    if (hamburger) {
-        hamburger.addEventListener('click', toggleMenu);
-    }
-    closeMenuOnLinkClick();
-});
