@@ -23,8 +23,15 @@
 - [x] Add JavaScript functionality to close menu on link click
 - [x] Test menu toggle functionality on mobile
 
-## 4. Testing and Verification
+## 4. Implement Cart Persistence with Firestore
+- [x] Add loadCartFromFirestore function to load cart data from Firestore for logged-in users
+- [x] Add saveCartToFirestore function to save cart data to Firestore
+- [x] Integrate cart loading from Firestore in initializeApp function
+- [x] Ensure cart syncs between localStorage and Firestore
+
+## 5. Testing and Verification
 - [ ] Test product detail page image loading
 - [ ] Test review form visibility and submission
 - [ ] Test hamburger menu on mobile devices
+- [ ] Test cart persistence across sessions
 - [ ] Ensure overall responsiveness

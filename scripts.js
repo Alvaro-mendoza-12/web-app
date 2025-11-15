@@ -91,6 +91,11 @@ async function initializeApp() {
     console.log('Cart loaded from localStorage:', cart);
     console.log('Wishlist loaded from localStorage:', wishlist);
 
+    // Load cart from Firestore if user is logged in
+    if (currentUser) {
+        await loadCartFromFirestore();
+    }
+
 
     setupEventListeners();
 }
@@ -207,10 +212,15 @@ function loadCart() {
 }
 
 // Add to cart
-function addToCart(productId) {
+async function addToCart(productId, size = 'M', color = 'Negro') {
+    if (!currentUser) {
+        alert('Debes iniciar sesión para agregar productos al carrito');
+        window.location.href = 'login.html';
+        return;
+    }
+
     const product = products.find(p => p.id === productId);
-    const size = document.getElementById('size').value;
-    const color = document.getElementById('color').value;
+    if (!product) return;
 
     const existingItem = cart.find(item => item.id === productId && item.size === size && item.color === color);
     if (existingItem) {
@@ -220,7 +230,17 @@ function addToCart(productId) {
     }
 
     localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Save to Firestore if user is logged in
+    if (db) {
+        await saveCartToFirestore();
+    }
+
     alert('Producto agregado al carrito');
+    // Reload cart if on cart page
+    if (window.location.pathname.includes('cart.html')) {
+        loadCart();
+    }
 }
 
 // Remove from cart
@@ -731,6 +751,40 @@ async function saveWishlistToFirestore() {
         }
     } catch (error) {
         console.error('Error saving wishlist:', error);
+    }
+}
+
+// Load cart from Firestore
+async function loadCartFromFirestore() {
+    if (!currentUser) return;
+    try {
+        const q = query(collection(db, 'carts'), where('userId', '==', currentUser.id));
+        const querySnapshot = await getDocs(q);
+        cart = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log('Cart loaded from Firestore:', cart.length);
+    } catch (error) {
+        console.error('Error loading cart:', error);
+        cart = JSON.parse(localStorage.getItem('cart')) || [];
+    }
+}
+
+// Save cart to Firestore
+async function saveCartToFirestore() {
+    if (!currentUser) return;
+    try {
+        const userCartRef = collection(db, 'carts');
+        // Clear existing cart
+        const q = query(userCartRef, where('userId', '==', currentUser.id));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach(async (doc) => {
+            await deleteDoc(doc.ref);
+        });
+        // Add new cart items
+        for (const item of cart) {
+            await addDoc(userCartRef, { ...item, userId: currentUser.id });
+        }
+    } catch (error) {
+        console.error('Error saving cart:', error);
     }
 }
 
